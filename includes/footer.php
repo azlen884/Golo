@@ -1,3 +1,16 @@
+<?php
+$currentScript = basename($_SERVER['PHP_SELF'] ?? '');
+$isGuestAuthPage = in_array($currentScript, ['login.php', 'register.php', 'forgot-password.php', 'reset-password.php']);
+$isUserPanel = !empty($authUser) && (strpos($_SERVER['REQUEST_URI'] ?? '', '/user/') !== false || strpos($_SERVER['PHP_SELF'] ?? '', '/user/') !== false) && !$isGuestAuthPage;
+?>
+
+<?php if ($isUserPanel): ?>
+            </div> <!-- End p-4 sm:p-6 lg:p-8 -->
+        </div> <!-- End main content area -->
+    </div> <!-- End flex layout -->
+</body>
+</html>
+<?php else: ?>
         </div>
     </main>
 
@@ -80,3 +93,4 @@
 
 </body>
 </html>
+<?php endif; ?>
