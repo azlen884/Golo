@@ -1,0 +1,6 @@
+{
+  "name": "Apex Gaming Platform",
+  "description": "Enterprise-grade gaming platform infrastructure with real PHP, MySQL, comprehensive wallet ledger, user and admin portals.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

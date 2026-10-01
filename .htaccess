@@ -1,0 +1,32 @@
+# Apache Configuration for Apex Gaming Platform
+Options -Indexes
+ServerSignature Off
+
+# Protect sensitive directories and files
+<FilesMatch "^\.">
+    Order allow,deny
+    Deny from all
+</FilesMatch>
+
+<FilesMatch "^(composer\.json|package\.json|tsconfig\.json|vite\.config\.ts|\.env.*)$">
+    Order allow,deny
+    Deny from all
+</FilesMatch>
+
+DirectoryIndex index.php
+
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteBase /
+
+    # Block access to storage and database folders
+    RewriteRule ^(storage|database)/ - [F,L]
+
+    # Allow direct access to existing files and directories
+    RewriteCond %{REQUEST_FILENAME} -f [OR]
+    RewriteCond %{REQUEST_FILENAME} -d
+    RewriteRule ^ - [L]
+
+    # Rewrite non-existent requests to index.php
+    RewriteRule ^(.*)$ index.php [QSA,L]
+</IfModule>
