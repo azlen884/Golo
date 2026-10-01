@@ -93,51 +93,97 @@ body {
     background: linear-gradient(90deg, transparent, rgba(37, 99, 235, 0.8), transparent);
 }
 
-/* ========================================================
-   Admin Single Responsive Sidebar Navigation
-   ======================================================== */
-#adminSidebar {
-    transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+/* Prevent horizontal scrolling across the entire application */
+html, body {
+    max-width: 100%;
+    overflow-x: hidden;
 }
 
-/* Tablet & Desktop (>= 768px): fixed side-by-side layout */
+/* ========================================================
+   Responsive Sidebar Navigation: User Side & Admin Side
+   ======================================================== */
+#adminSidebar,
+#userSidebar {
+    transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.3s ease-in-out;
+    max-width: 85vw;
+}
+
+/* Tablet & Desktop (>= 768px): fixed side-by-side layout, always visible */
 @media (min-width: 768px) {
-    #adminSidebar {
+    #adminSidebar,
+    #userSidebar {
         transform: translateX(0) !important;
         position: static !important;
         display: flex !important;
         visibility: visible !important;
         opacity: 1 !important;
+        flex-shrink: 0 !important;
     }
-    #adminSidebarBackdrop {
+    #adminSidebarBackdrop,
+    #userSidebarBackdrop {
         display: none !important;
     }
-    #adminSidebarToggle {
+    #adminSidebarToggle,
+    #userSidebarToggle {
         display: none !important;
     }
-    #adminCloseSidebar {
+    #adminCloseSidebar,
+    #userCloseSidebar {
         display: none !important;
     }
 }
 
-/* Mobile (< 768px): off-canvas drawer */
+/* Mobile (< 768px): proper off-canvas slide-out drawer */
 @media (max-width: 767.98px) {
-    #adminSidebar {
+    #adminSidebar,
+    #userSidebar {
         position: fixed !important;
         top: 0 !important;
         bottom: 0 !important;
         left: 0 !important;
+        height: 100vh !important;
+        height: 100dvh !important;
+        width: 280px !important;
+        max-width: 85vw !important;
         z-index: 50 !important;
-        transform: translateX(-100%);
+        transform: translateX(-100%) !important;
+        box-shadow: none;
     }
-    #adminSidebar.open {
+    
+    #adminSidebar.open,
+    #userSidebar.open {
         transform: translateX(0) !important;
+        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.75) !important;
     }
-    #adminSidebarBackdrop.active {
+
+    #adminSidebarBackdrop,
+    #userSidebarBackdrop {
+        position: fixed !important;
+        inset: 0 !important;
+        background-color: rgba(0, 0, 0, 0.75) !important;
+        backdrop-filter: blur(4px) !important;
+        -webkit-backdrop-filter: blur(4px) !important;
+        z-index: 40 !important;
+        display: none;
+        opacity: 0;
+        transition: opacity 0.3s ease-in-out;
+    }
+
+    #adminSidebarBackdrop.active,
+    #userSidebarBackdrop.active {
         display: block !important;
+        opacity: 1 !important;
     }
-    #adminSidebarToggle {
+
+    #adminSidebarToggle,
+    #userSidebarToggle {
+        display: inline-flex !important;
+    }
+
+    #adminCloseSidebar,
+    #userCloseSidebar {
         display: inline-flex !important;
     }
 }
+
 

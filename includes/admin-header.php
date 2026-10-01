@@ -309,13 +309,13 @@ $openTicketsCount = (int)$pdo->query("SELECT COUNT(*) FROM support_tickets WHERE
         <div class="flex-1 flex flex-col min-w-0 overflow-y-auto">
             
             <!-- Top Admin Header Bar -->
-            <header class="h-16 bg-dark-900/90 border-b border-white/[0.06] backdrop-blur-md px-4 sm:px-6 flex items-center justify-between sticky top-0 z-30">
-                <div class="flex items-center gap-3">
+            <header class="h-16 bg-dark-900/90 border-b border-white/[0.06] backdrop-blur-md px-3 sm:px-6 flex items-center justify-between sticky top-0 z-30">
+                <div class="flex items-center gap-2 sm:gap-3 min-w-0">
                     <!-- Hamburger / Menu Button (Mobile < 768px) -->
-                    <button type="button" id="adminSidebarToggle" class="md:hidden p-2 rounded-xl bg-dark-850 hover:bg-dark-800 border border-white/[0.06] text-slate-300 hover:text-white transition-colors" aria-label="Toggle Sidebar Menu">
+                    <button type="button" id="adminSidebarToggle" class="md:hidden p-2 rounded-xl bg-dark-850 hover:bg-dark-800 border border-white/[0.06] text-slate-300 hover:text-white transition-colors flex-shrink-0" aria-label="Toggle Sidebar Menu">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
                     </button>
-                    <h2 class="text-sm font-bold text-white tracking-tight truncate"><?= e($pageTitle) ?></h2>
+                    <h2 class="text-sm font-bold text-white tracking-tight truncate max-w-[120px] sm:max-w-xs md:max-w-none"><?= e($pageTitle) ?></h2>
                 </div>
                 
                 <div class="flex items-center gap-2 sm:gap-3">

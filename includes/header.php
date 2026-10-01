@@ -64,14 +64,14 @@ $isUserPanel = !empty($authUser) && (strpos($_SERVER['REQUEST_URI'] ?? '', '/use
 
 <?php if ($isUserPanel): ?>
 
-    <!-- USER PANEL LAYOUT: Responsive Sidebar (Desktop Fixed + Mobile/Tablet Slide-out Drawer) -->
-    <div class="flex-1 flex overflow-hidden h-screen">
+    <!-- USER PANEL LAYOUT: Responsive Sidebar (Desktop Fixed + Mobile Slide-out Drawer) -->
+    <div class="flex-1 flex overflow-hidden min-h-screen">
         
-        <!-- Mobile/Tablet Slide-out Backdrop Overlay -->
+        <!-- Mobile Slide-out Backdrop Overlay -->
         <div id="userSidebarBackdrop" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-40 hidden transition-opacity duration-300"></div>
 
         <!-- User Left Sidebar Navigation -->
-        <aside id="userSidebar" class="w-64 bg-dark-900 border-r border-white/[0.06] flex-shrink-0 flex flex-col justify-between fixed lg:static inset-y-0 left-0 z-50 transform -translate-x-full lg:translate-x-0 transition-transform duration-300 ease-in-out shadow-2xl lg:shadow-none">
+        <aside id="userSidebar" class="w-64 sm:w-72 bg-dark-900 border-r border-white/[0.06] flex-shrink-0 flex flex-col justify-between shadow-2xl md:shadow-none">
             
             <div class="h-full overflow-y-auto px-4 py-5 space-y-5">
                 
@@ -86,8 +86,8 @@ $isUserPanel = !empty($authUser) && (strpos($_SERVER['REQUEST_URI'] ?? '', '/use
                             <span class="text-[10px] text-slate-400 font-mono">Player Portal</span>
                         </div>
                     </a>
-                    <!-- Close button on Mobile/Tablet -->
-                    <button type="button" id="userCloseSidebar" class="lg:hidden p-1.5 rounded-lg bg-dark-800 text-slate-400 hover:text-white hover:bg-dark-750 transition-colors">
+                    <!-- Close button on Mobile (< 768px) -->
+                    <button type="button" id="userCloseSidebar" class="md:hidden p-1.5 rounded-lg bg-dark-800 text-slate-400 hover:text-white hover:bg-dark-750 transition-colors" aria-label="Close Sidebar">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
                     </button>
                 </div>
@@ -235,13 +235,13 @@ $isUserPanel = !empty($authUser) && (strpos($_SERVER['REQUEST_URI'] ?? '', '/use
         <div class="flex-1 flex flex-col min-w-0 overflow-y-auto">
             
             <!-- Top User Header Bar -->
-            <header class="h-16 bg-dark-900/90 border-b border-white/[0.06] backdrop-blur-md px-4 sm:px-6 flex items-center justify-between sticky top-0 z-30">
-                <div class="flex items-center gap-3">
-                    <!-- Hamburger / Menu Button (Mobile & Tablet) -->
-                    <button type="button" id="userSidebarToggle" class="lg:hidden p-2 rounded-xl bg-dark-850 hover:bg-dark-800 border border-white/[0.06] text-slate-300 hover:text-white transition-colors" aria-label="Toggle Sidebar Menu">
+            <header class="h-16 bg-dark-900/90 border-b border-white/[0.06] backdrop-blur-md px-3 sm:px-6 flex items-center justify-between sticky top-0 z-30">
+                <div class="flex items-center gap-2 sm:gap-3 min-w-0">
+                    <!-- Hamburger / Menu Button (Mobile < 768px) -->
+                    <button type="button" id="userSidebarToggle" class="md:hidden p-2 rounded-xl bg-dark-850 hover:bg-dark-800 border border-white/[0.06] text-slate-300 hover:text-white transition-colors flex-shrink-0" aria-label="Toggle Sidebar Menu">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
                     </button>
-                    <h2 class="text-sm font-bold text-white tracking-tight truncate"><?= e($pageTitle) ?></h2>
+                    <h2 class="text-sm font-bold text-white tracking-tight truncate max-w-[120px] sm:max-w-xs md:max-w-none"><?= e($pageTitle) ?></h2>
                 </div>
                 
                 <div class="flex items-center gap-2 sm:gap-3">

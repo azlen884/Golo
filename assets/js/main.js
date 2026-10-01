@@ -62,6 +62,17 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
+    // Auto-close admin sidebar on link clicks on mobile (< 768px)
+    if (adminSidebar) {
+        adminSidebar.querySelectorAll('a').forEach(function (link) {
+            link.addEventListener('click', function () {
+                if (window.innerWidth < 768) {
+                    closeAdminSidebar();
+                }
+            });
+        });
+    }
+
     // ==========================================
     // 2. USER SIDEBAR HANDLERS (Mobile / Tablet)
     // ==========================================
@@ -72,29 +83,33 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function openUserSidebar() {
         if (!userSidebar) return;
+        userSidebar.classList.add('open');
         userSidebar.classList.remove('-translate-x-full');
         userSidebar.classList.add('translate-x-0');
         if (userSidebarBackdrop) {
+            userSidebarBackdrop.classList.add('active');
             userSidebarBackdrop.classList.remove('hidden');
         }
-        document.body.classList.add('overflow-hidden', 'lg:overflow-auto');
+        document.body.classList.add('overflow-hidden', 'md:overflow-auto');
     }
 
     function closeUserSidebar() {
         if (!userSidebar) return;
+        userSidebar.classList.remove('open');
         userSidebar.classList.add('-translate-x-full');
         userSidebar.classList.remove('translate-x-0');
         if (userSidebarBackdrop) {
+            userSidebarBackdrop.classList.remove('active');
             userSidebarBackdrop.classList.add('hidden');
         }
-        document.body.classList.remove('overflow-hidden', 'lg:overflow-auto');
+        document.body.classList.remove('overflow-hidden', 'md:overflow-auto');
     }
 
     if (userSidebarToggle) {
         userSidebarToggle.addEventListener('click', function (e) {
             e.preventDefault();
             e.stopPropagation();
-            if (userSidebar && userSidebar.classList.contains('translate-x-0')) {
+            if (userSidebar && (userSidebar.classList.contains('open') || userSidebar.classList.contains('translate-x-0'))) {
                 closeUserSidebar();
             } else {
                 openUserSidebar();
@@ -112,6 +127,17 @@ document.addEventListener('DOMContentLoaded', function () {
     if (userSidebarBackdrop) {
         userSidebarBackdrop.addEventListener('click', function () {
             closeUserSidebar();
+        });
+    }
+
+    // Auto-close user sidebar on link clicks on mobile (< 768px)
+    if (userSidebar) {
+        userSidebar.querySelectorAll('a').forEach(function (link) {
+            link.addEventListener('click', function () {
+                if (window.innerWidth < 768) {
+                    closeUserSidebar();
+                }
+            });
         });
     }
 
