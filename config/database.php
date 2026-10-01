@@ -4,6 +4,10 @@
  * Apex Gaming Platform
  */
 
+if (file_exists(__DIR__ . '/db_custom.php')) {
+    require_once __DIR__ . '/db_custom.php';
+}
+
 if (!defined('DB_HOST')) {
     define('DB_HOST', getenv('DB_HOST') ?: '127.0.0.1');
     define('DB_PORT', getenv('DB_PORT') ?: '3306');
