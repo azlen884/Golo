@@ -335,6 +335,6 @@ require_once __DIR__ . '/../includes/admin-header.php';
             </div>
         </form>
     </div>
-</div>
 
-<?php require_once __DIR__ . '/../includes/footer.php'; ?>
+<?php require_once __DIR__ . '/../includes/admin-footer.php'; ?>
+

@@ -283,6 +283,6 @@ require_once __DIR__ . '/../includes/admin-header.php';
             </div>
         <?php endif; ?>
     </div>
-</div>
 
-<?php require_once __DIR__ . '/../includes/footer.php'; ?>
+<?php require_once __DIR__ . '/../includes/admin-footer.php'; ?>
+

@@ -231,5 +231,4 @@ require_once __DIR__ . '/../includes/admin-header.php';
 
 </div>
 
-</body>
-</html>
+<?php require_once __DIR__ . '/../includes/admin-footer.php'; ?>

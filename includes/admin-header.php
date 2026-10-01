@@ -58,13 +58,13 @@ $openTicketsCount = (int)$pdo->query("SELECT COUNT(*) FROM support_tickets WHERE
 </head>
 <body class="bg-dark-950 text-slate-200 min-h-screen flex flex-col selection:bg-brand-600 selection:text-white">
 
-    <div class="flex-1 flex overflow-hidden h-screen">
+    <div class="flex-1 flex overflow-hidden min-h-screen">
         
-        <!-- Mobile/Tablet Slide-out Backdrop Overlay -->
+        <!-- Mobile Slide-out Backdrop Overlay -->
         <div id="adminSidebarBackdrop" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-40 hidden transition-opacity duration-300"></div>
 
-        <!-- Left Sidebar Navigation (Desktop Fixed + Mobile/Tablet Drawer) -->
-        <aside id="adminSidebar" class="w-64 bg-dark-900 border-r border-white/[0.06] flex-shrink-0 flex flex-col justify-between fixed lg:static inset-y-0 left-0 z-50 transform -translate-x-full lg:translate-x-0 transition-transform duration-300 ease-in-out shadow-2xl lg:shadow-none">
+        <!-- Single Canonical Admin Sidebar Navigation (Desktop/Tablet Fixed + Mobile Drawer) -->
+        <aside id="adminSidebar" class="w-64 bg-dark-900 border-r border-white/[0.06] flex-shrink-0 flex flex-col justify-between shadow-2xl md:shadow-none">
             
             <div class="h-full overflow-y-auto px-4 py-5 space-y-5">
                 
@@ -79,8 +79,8 @@ $openTicketsCount = (int)$pdo->query("SELECT COUNT(*) FROM support_tickets WHERE
                             <span class="text-[10px] text-slate-400 font-mono">v<?= APP_VERSION ?> • Core Engine</span>
                         </div>
                     </div>
-                    <!-- Close button on Mobile/Tablet -->
-                    <button type="button" id="adminCloseSidebar" class="lg:hidden p-1.5 rounded-lg bg-dark-800 text-slate-400 hover:text-white hover:bg-dark-750 transition-colors">
+                    <!-- Close button on Mobile (< 768px) -->
+                    <button type="button" id="adminCloseSidebar" class="md:hidden p-1.5 rounded-lg bg-dark-800 text-slate-400 hover:text-white hover:bg-dark-750 transition-colors" aria-label="Close Sidebar">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
                     </button>
                 </div>
@@ -91,7 +91,7 @@ $openTicketsCount = (int)$pdo->query("SELECT COUNT(*) FROM support_tickets WHERE
                     <!-- Dashboard -->
                     <div>
                         <a href="/admin/dashboard.php" class="flex items-center gap-2.5 px-3 py-2 rounded-xl <?= $activeAdminNav === 'dashboard' ? 'bg-brand-600 text-white font-semibold shadow-lg shadow-brand-600/30' : 'text-slate-300 hover:text-white hover:bg-white/[0.04]' ?> transition-colors">
-                            <svg class="w-4 h-4 text-brand-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
+                            <svg class="w-4 h-4 <?= $activeAdminNav === 'dashboard' ? 'text-white' : 'text-brand-400' ?>" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg>
                             <span>Dashboard</span>
                         </a>
                     </div>
@@ -248,7 +248,7 @@ $openTicketsCount = (int)$pdo->query("SELECT COUNT(*) FROM support_tickets WHERE
                         <div class="space-y-0.5">
                             <a href="/admin/settings.php" class="flex items-center gap-2.5 px-3 py-2 rounded-xl <?= $activeAdminNav === 'settings' ? 'bg-brand-600/10 text-brand-400 font-semibold' : 'text-slate-400 hover:text-slate-200 hover:bg-white/[0.03]' ?> transition-colors">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
-                                <span>System Settings</span>
+                                <span>Settings</span>
                             </a>
                             <a href="/admin/site-settings.php" class="flex items-center gap-2.5 px-3 py-2 rounded-xl <?= $activeAdminNav === 'site-settings' ? 'bg-brand-600/10 text-brand-400 font-semibold' : 'text-slate-400 hover:text-slate-200 hover:bg-white/[0.03]' ?> transition-colors">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"></path></svg>
@@ -268,11 +268,11 @@ $openTicketsCount = (int)$pdo->query("SELECT COUNT(*) FROM support_tickets WHERE
                             </a>
                             <a href="/admin/updates.php" class="flex items-center gap-2.5 px-3 py-2 rounded-xl <?= $activeAdminNav === 'updates' ? 'bg-brand-600/10 text-brand-400 font-semibold' : 'text-slate-400 hover:text-slate-200 hover:bg-white/[0.03]' ?> transition-colors">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
-                                <span>Updates & Migrations</span>
+                                <span>Updates</span>
                             </a>
                             <a href="/admin/backups.php" class="flex items-center gap-2.5 px-3 py-2 rounded-xl <?= $activeAdminNav === 'backups' ? 'bg-brand-600/10 text-brand-400 font-semibold' : 'text-slate-400 hover:text-slate-200 hover:bg-white/[0.03]' ?> transition-colors">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"></path></svg>
-                                <span>System Backups</span>
+                                <span>Backups</span>
                             </a>
                         </div>
                     </div>
@@ -311,8 +311,8 @@ $openTicketsCount = (int)$pdo->query("SELECT COUNT(*) FROM support_tickets WHERE
             <!-- Top Admin Header Bar -->
             <header class="h-16 bg-dark-900/90 border-b border-white/[0.06] backdrop-blur-md px-4 sm:px-6 flex items-center justify-between sticky top-0 z-30">
                 <div class="flex items-center gap-3">
-                    <!-- Hamburger / Menu Button (Mobile & Tablet) -->
-                    <button type="button" id="adminSidebarToggle" class="lg:hidden p-2 rounded-xl bg-dark-850 hover:bg-dark-800 border border-white/[0.06] text-slate-300 hover:text-white transition-colors" aria-label="Toggle Sidebar Menu">
+                    <!-- Hamburger / Menu Button (Mobile < 768px) -->
+                    <button type="button" id="adminSidebarToggle" class="md:hidden p-2 rounded-xl bg-dark-850 hover:bg-dark-800 border border-white/[0.06] text-slate-300 hover:text-white transition-colors" aria-label="Toggle Sidebar Menu">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
                     </button>
                     <h2 class="text-sm font-bold text-white tracking-tight truncate"><?= e($pageTitle) ?></h2>
