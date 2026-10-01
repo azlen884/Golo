@@ -15,29 +15,33 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function openAdminSidebar() {
         if (!adminSidebar) return;
+        adminSidebar.classList.add('open');
         adminSidebar.classList.remove('-translate-x-full');
         adminSidebar.classList.add('translate-x-0');
         if (adminSidebarBackdrop) {
+            adminSidebarBackdrop.classList.add('active');
             adminSidebarBackdrop.classList.remove('hidden');
         }
-        document.body.classList.add('overflow-hidden', 'lg:overflow-auto');
+        document.body.classList.add('overflow-hidden', 'md:overflow-auto');
     }
 
     function closeAdminSidebar() {
         if (!adminSidebar) return;
+        adminSidebar.classList.remove('open');
         adminSidebar.classList.add('-translate-x-full');
         adminSidebar.classList.remove('translate-x-0');
         if (adminSidebarBackdrop) {
+            adminSidebarBackdrop.classList.remove('active');
             adminSidebarBackdrop.classList.add('hidden');
         }
-        document.body.classList.remove('overflow-hidden', 'lg:overflow-auto');
+        document.body.classList.remove('overflow-hidden', 'md:overflow-auto');
     }
 
     if (adminSidebarToggle) {
         adminSidebarToggle.addEventListener('click', function (e) {
             e.preventDefault();
             e.stopPropagation();
-            if (adminSidebar && adminSidebar.classList.contains('translate-x-0')) {
+            if (adminSidebar && (adminSidebar.classList.contains('open') || adminSidebar.classList.contains('translate-x-0'))) {
                 closeAdminSidebar();
             } else {
                 openAdminSidebar();

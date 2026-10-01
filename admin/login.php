@@ -74,8 +74,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             </button>
         </form>
 
-        <div class="mt-8 pt-6 border-t border-slate-800/80 text-center text-xs text-slate-500">
-            <a href="/index.php" class="hover:text-slate-300 transition-colors">&larr; Return to Public Platform</a>
+        <div class="mt-8 pt-6 border-t border-slate-800/80 text-center text-xs text-slate-500 space-y-3">
+            <div class="p-2.5 rounded-xl bg-blue-500/10 border border-blue-500/20 text-blue-300 text-[11px] font-mono">
+                Admin: <strong class="text-white">admin</strong> &bull; Password: <strong class="text-white">admin123456</strong>
+            </div>
+            <div>
+                <a href="/index.php" class="hover:text-slate-300 transition-colors">&larr; Return to Public Platform</a>
+            </div>
         </div>
     </div>
 
