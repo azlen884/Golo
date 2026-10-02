@@ -84,17 +84,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !$alreadyInstalled) {
                     throw new Exception("Cannot connect to MySQL server at {$dbHost}:{$dbPort}. Error: " . $e->getMessage());
                 }
 
-                // Ensure target database exists
-                $serverPdo->exec("CREATE DATABASE IF NOT EXISTS `{$dbName}` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci");
+                // Ensure target database exists (with fallback if user lacks CREATE DATABASE privilege)
+                try {
+                    $serverPdo->exec("CREATE DATABASE IF NOT EXISTS `{$dbName}` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci");
+                } catch (Throwable $dbEx) {
+                    // On cPanel/shared hosting, users typically create the database via cPanel beforehand.
+                }
 
-                // Connect to the specific database
+                // Connect to the specific database with foreign key checks temporarily disabled
                 $dbDsn = "mysql:host={$dbHost};port={$dbPort};dbname={$dbName};charset=utf8mb4";
                 $pdo = new PDO($dbDsn, $dbUser, $dbPass, [
                     PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
                     PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
                     PDO::ATTR_EMULATE_PREPARES   => false,
-                    PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8mb4 COLLATE utf8mb4_unicode_ci"
+                    PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8mb4 COLLATE utf8mb4_unicode_ci; SET FOREIGN_KEY_CHECKS = 0;"
                 ]);
+
+                $pdo->exec("SET FOREIGN_KEY_CHECKS = 0;");
+                $pdo->exec("SET SQL_MODE = 'NO_AUTO_VALUE_ON_ZERO';");
 
                 // Save configured database credentials to config/db_custom.php
                 $dbConfigFile = __DIR__ . '/../config/db_custom.php';
@@ -110,6 +117,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !$alreadyInstalled) {
 
                 // 3. Create/import the required database tables/migrations
                 $migrated = run_pending_migrations($pdo);
+
+                // Re-enable foreign key checks after migrations
+                $pdo->exec("SET FOREIGN_KEY_CHECKS = 1;");
 
                 // 4. Create the initial admin account
                 $hash = password_hash($adminPass, PASSWORD_BCRYPT);

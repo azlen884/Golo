@@ -1,6 +1,9 @@
 -- Migration 002: Common Gaming Platform Engine & Logs
 -- Version: 1.0.0
 
+SET FOREIGN_KEY_CHECKS = 0;
+SET SQL_MODE = 'NO_AUTO_VALUE_ON_ZERO';
+
 CREATE TABLE IF NOT EXISTS `rounds` (
   `id` INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
   `round_code` VARCHAR(64) NOT NULL UNIQUE,
@@ -30,8 +33,8 @@ CREATE TABLE IF NOT EXISTS `bets` (
   `odds` DECIMAL(8,4) NOT NULL DEFAULT 1.0000,
   `placed_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   `settled_at` DATETIME NULL,
-  FOREIGN KEY (`round_id`) REFERENCES `rounds` (`id`) ON DELETE CASCADE,
-  FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `fk_bets_round` FOREIGN KEY (`round_id`) REFERENCES `rounds` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `fk_bets_user` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE,
   INDEX `idx_bet_round_user` (`round_id`, `user_id`),
   INDEX `idx_bet_status` (`status`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -45,7 +48,7 @@ CREATE TABLE IF NOT EXISTS `results` (
   `verified` TINYINT(1) NOT NULL DEFAULT 0,
   `declared_by` VARCHAR(50) NOT NULL DEFAULT 'CRON_RNG',
   `declared_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  FOREIGN KEY (`round_id`) REFERENCES `rounds` (`id`) ON DELETE CASCADE
+  CONSTRAINT `fk_results_round` FOREIGN KEY (`round_id`) REFERENCES `rounds` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE IF NOT EXISTS `settlements` (
@@ -58,7 +61,7 @@ CREATE TABLE IF NOT EXISTS `settlements` (
   `platform_margin` DECIMAL(16,4) NOT NULL DEFAULT 0.0000,
   `settled_by` VARCHAR(50) NOT NULL DEFAULT 'CRON_MASTER',
   `settled_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  FOREIGN KEY (`round_id`) REFERENCES `rounds` (`id`) ON DELETE CASCADE
+  CONSTRAINT `fk_settlements_round` FOREIGN KEY (`round_id`) REFERENCES `rounds` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE IF NOT EXISTS `admin_activity` (
@@ -71,7 +74,7 @@ CREATE TABLE IF NOT EXISTS `admin_activity` (
   `ip_address` VARCHAR(45) NOT NULL,
   `user_agent` TEXT NULL,
   `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  FOREIGN KEY (`admin_id`) REFERENCES `admins` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `fk_admin_act_admin` FOREIGN KEY (`admin_id`) REFERENCES `admins` (`id`) ON DELETE CASCADE,
   INDEX `idx_admin_act_time` (`created_at`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
@@ -166,3 +169,5 @@ CREATE TABLE IF NOT EXISTS `backups` (
   `status` ENUM('completed', 'failed') NOT NULL DEFAULT 'completed',
   `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+SET FOREIGN_KEY_CHECKS = 1;

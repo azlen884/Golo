@@ -6,3 +6,5 @@ coverage/
 *.log
 .env*
 !.env.example
+config/db_custom.php
+storage/installed.lock

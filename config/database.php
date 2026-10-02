@@ -51,6 +51,79 @@ function get_db(): PDO {
 }
 
 /**
+ * Helper to safely split SQL file content into individual queries.
+ *
+ * @param string $sql
+ * @return array
+ */
+function split_sql_queries(string $sql): array {
+    $queries = [];
+    $current = '';
+    $inString = false;
+    $stringChar = '';
+    $len = strlen($sql);
+
+    for ($i = 0; $i < $len; $i++) {
+        $char = $sql[$i];
+        $nextChar = ($i + 1 < $len) ? $sql[$i + 1] : '';
+
+        // Comments when not in string
+        if (!$inString) {
+            if ($char === '-' && $nextChar === '-') {
+                $eol = strpos($sql, "\n", $i);
+                if ($eol === false) break;
+                $i = $eol;
+                continue;
+            }
+            if ($char === '/' && $nextChar === '*') {
+                $close = strpos($sql, '*/', $i + 2);
+                if ($close === false) break;
+                $i = $close + 1;
+                continue;
+            }
+            if ($char === '#') {
+                $eol = strpos($sql, "\n", $i);
+                if ($eol === false) break;
+                $i = $eol;
+                continue;
+            }
+        }
+
+        // String quotes
+        if ($char === '"' || $char === "'" || $char === '`') {
+            if ($inString && $stringChar === $char) {
+                if ($i > 0 && $sql[$i - 1] === "\\") {
+                    // Escaped quote
+                } else {
+                    $inString = false;
+                    $stringChar = '';
+                }
+            } elseif (!$inString) {
+                $inString = true;
+                $stringChar = $char;
+            }
+        }
+
+        if ($char === ';' && !$inString) {
+            $trimmed = trim($current);
+            if (!empty($trimmed)) {
+                $queries[] = $trimmed;
+            }
+            $current = '';
+        } else {
+            $current .= $char;
+        }
+    }
+
+    $trimmed = trim($current);
+    if (!empty($trimmed)) {
+        $queries[] = $trimmed;
+    }
+
+    return $queries;
+}
+
+/**
  * Executes any pending SQL migrations in /database/migrations/
  *
  * @param PDO $pdo
@@ -63,6 +136,10 @@ function run_pending_migrations(PDO $pdo): array {
     if (!is_dir($migrationsDir)) {
         return $executed;
     }
+
+    // Disable foreign key checks and strict zero dates during migration execution
+    $pdo->exec("SET FOREIGN_KEY_CHECKS = 0;");
+    $pdo->exec("SET SQL_MODE = 'NO_AUTO_VALUE_ON_ZERO';");
 
     // Ensure system_migrations tracking table exists
     $pdo->exec("
@@ -78,6 +155,7 @@ function run_pending_migrations(PDO $pdo): array {
 
     $files = glob($migrationsDir . '/*.sql');
     if (!$files) {
+        $pdo->exec("SET FOREIGN_KEY_CHECKS = 1;");
         return $executed;
     }
     sort($files);
@@ -97,8 +175,12 @@ function run_pending_migrations(PDO $pdo): array {
 
         // Run migration statements
         try {
-            // In MySQL, DDL causes implicit commit. Execute statements directly.
-            $pdo->exec($content);
+            $queries = split_sql_queries($content);
+            foreach ($queries as $query) {
+                if (!empty($query)) {
+                    $pdo->exec($query);
+                }
+            }
 
             // Record execution in system_migrations
             $recordStmt = $pdo->prepare("
@@ -114,9 +196,7 @@ function run_pending_migrations(PDO $pdo): array {
 
             $executed[] = $filename;
         } catch (Throwable $e) {
-            if ($pdo->inTransaction()) {
-                $pdo->rollBack();
-            }
+            $pdo->exec("SET FOREIGN_KEY_CHECKS = 1;");
             $logDir = __DIR__ . '/../storage/logs';
             if (!is_dir($logDir)) {
                 @mkdir($logDir, 0777, true);
@@ -130,5 +210,6 @@ function run_pending_migrations(PDO $pdo): array {
         }
     }
 
+    $pdo->exec("SET FOREIGN_KEY_CHECKS = 1;");
     return $executed;
 }

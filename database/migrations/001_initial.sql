@@ -1,6 +1,26 @@
 -- Migration 001: Initial Schema for Apex Gaming Platform
 -- Version: 1.0.0
 
+SET FOREIGN_KEY_CHECKS = 0;
+SET SQL_MODE = 'NO_AUTO_VALUE_ON_ZERO';
+
+-- Drop existing platform tables to guarantee clean schema state
+DROP TABLE IF EXISTS `promotions`;
+DROP TABLE IF EXISTS `bonuses`;
+DROP TABLE IF EXISTS `referrals`;
+DROP TABLE IF EXISTS `support_messages`;
+DROP TABLE IF EXISTS `support_tickets`;
+DROP TABLE IF EXISTS `notifications`;
+DROP TABLE IF EXISTS `user_sessions`;
+DROP TABLE IF EXISTS `withdrawals`;
+DROP TABLE IF EXISTS `deposits`;
+DROP TABLE IF EXISTS `transactions`;
+DROP TABLE IF EXISTS `wallet_ledger`;
+DROP TABLE IF EXISTS `wallets`;
+DROP TABLE IF EXISTS `profiles`;
+DROP TABLE IF EXISTS `users`;
+DROP TABLE IF EXISTS `admins`;
+
 CREATE TABLE IF NOT EXISTS `system_migrations` (
   `id` INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
   `filename` VARCHAR(255) NOT NULL UNIQUE,
@@ -42,7 +62,7 @@ CREATE TABLE IF NOT EXISTS `users` (
 
 CREATE TABLE IF NOT EXISTS `profiles` (
   `id` INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-  `user_id` INT UNSIGNED NOT NULL UNIQUE,
+  `user_id` INT UNSIGNED NOT NULL,
   `first_name` VARCHAR(60) NULL,
   `last_name` VARCHAR(60) NULL,
   `phone` VARCHAR(30) NULL,
@@ -54,13 +74,15 @@ CREATE TABLE IF NOT EXISTS `profiles` (
   `postal_code` VARCHAR(20) NULL,
   `kyc_status` ENUM('unverified', 'pending', 'verified', 'rejected') NOT NULL DEFAULT 'unverified',
   `kyc_notes` TEXT NULL,
+  `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
+  UNIQUE KEY `idx_profiles_user_id` (`user_id`),
+  CONSTRAINT `fk_profiles_user` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE IF NOT EXISTS `wallets` (
   `id` INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-  `user_id` INT UNSIGNED NOT NULL UNIQUE,
+  `user_id` INT UNSIGNED NOT NULL,
   `currency` VARCHAR(10) NOT NULL DEFAULT 'USD',
   `balance` DECIMAL(16,4) NOT NULL DEFAULT 0.0000,
   `bonus_balance` DECIMAL(16,4) NOT NULL DEFAULT 0.0000,
@@ -71,7 +93,8 @@ CREATE TABLE IF NOT EXISTS `wallets` (
   `total_won` DECIMAL(16,4) NOT NULL DEFAULT 0.0000,
   `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE,
+  UNIQUE KEY `idx_wallets_user_id` (`user_id`),
+  CONSTRAINT `fk_wallets_user` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE,
   INDEX `idx_wallet_balance` (`balance`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
@@ -87,8 +110,8 @@ CREATE TABLE IF NOT EXISTS `wallet_ledger` (
   `reference_type` VARCHAR(50) NULL,
   `description` VARCHAR(255) NOT NULL,
   `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  FOREIGN KEY (`wallet_id`) REFERENCES `wallets` (`id`) ON DELETE CASCADE,
-  FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `fk_ledger_wallet` FOREIGN KEY (`wallet_id`) REFERENCES `wallets` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `fk_ledger_user` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE,
   INDEX `idx_ledger_user` (`user_id`),
   INDEX `idx_ledger_type` (`transaction_type`),
   INDEX `idx_ledger_created` (`created_at`)
@@ -110,8 +133,8 @@ CREATE TABLE IF NOT EXISTS `transactions` (
   `ip_address` VARCHAR(45) NULL,
   `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE,
-  FOREIGN KEY (`wallet_id`) REFERENCES `wallets` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `fk_tx_user` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `fk_tx_wallet` FOREIGN KEY (`wallet_id`) REFERENCES `wallets` (`id`) ON DELETE CASCADE,
   INDEX `idx_tx_ref` (`transaction_ref`),
   INDEX `idx_tx_user_status` (`user_id`, `status`),
   INDEX `idx_tx_created` (`created_at`)
@@ -131,8 +154,8 @@ CREATE TABLE IF NOT EXISTS `deposits` (
   `processed_by` INT UNSIGNED NULL,
   `processed_at` DATETIME NULL,
   `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE,
-  FOREIGN KEY (`transaction_id`) REFERENCES `transactions` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `fk_deposits_user` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `fk_deposits_tx` FOREIGN KEY (`transaction_id`) REFERENCES `transactions` (`id`) ON DELETE CASCADE,
   INDEX `idx_dep_status` (`status`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
@@ -150,8 +173,8 @@ CREATE TABLE IF NOT EXISTS `withdrawals` (
   `processed_by` INT UNSIGNED NULL,
   `processed_at` DATETIME NULL,
   `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE,
-  FOREIGN KEY (`transaction_id`) REFERENCES `transactions` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `fk_withdrawals_user` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `fk_withdrawals_tx` FOREIGN KEY (`transaction_id`) REFERENCES `transactions` (`id`) ON DELETE CASCADE,
   INDEX `idx_with_status` (`status`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
@@ -163,7 +186,7 @@ CREATE TABLE IF NOT EXISTS `user_sessions` (
   `user_agent` TEXT NULL,
   `last_activity` INT NOT NULL,
   `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `fk_sessions_user` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE,
   INDEX `idx_sess_id` (`session_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
@@ -190,7 +213,7 @@ CREATE TABLE IF NOT EXISTS `support_tickets` (
   `last_reply_at` DATETIME NULL,
   `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `fk_tickets_user` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE,
   INDEX `idx_ticket_user` (`user_id`),
   INDEX `idx_ticket_status` (`status`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -203,7 +226,7 @@ CREATE TABLE IF NOT EXISTS `support_messages` (
   `message` TEXT NOT NULL,
   `attachments` TEXT NULL,
   `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  FOREIGN KEY (`ticket_id`) REFERENCES `support_tickets` (`id`) ON DELETE CASCADE
+  CONSTRAINT `fk_messages_ticket` FOREIGN KEY (`ticket_id`) REFERENCES `support_tickets` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE IF NOT EXISTS `referrals` (
@@ -215,8 +238,8 @@ CREATE TABLE IF NOT EXISTS `referrals` (
   `total_earnings` DECIMAL(16,4) NOT NULL DEFAULT 0.0000,
   `status` ENUM('active', 'pending') NOT NULL DEFAULT 'active',
   `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  FOREIGN KEY (`referrer_id`) REFERENCES `users` (`id`) ON DELETE CASCADE,
-  FOREIGN KEY (`referee_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
+  CONSTRAINT `fk_referrals_referrer` FOREIGN KEY (`referrer_id`) REFERENCES `users` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `fk_referrals_referee` FOREIGN KEY (`referee_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE IF NOT EXISTS `bonuses` (
@@ -230,7 +253,7 @@ CREATE TABLE IF NOT EXISTS `bonuses` (
   `status` ENUM('active', 'completed', 'expired', 'cancelled') NOT NULL DEFAULT 'active',
   `expires_at` DATETIME NULL,
   `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
+  CONSTRAINT `fk_bonuses_user` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE IF NOT EXISTS `promotions` (
@@ -248,3 +271,5 @@ CREATE TABLE IF NOT EXISTS `promotions` (
   `end_date` DATETIME NULL,
   `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+SET FOREIGN_KEY_CHECKS = 1;

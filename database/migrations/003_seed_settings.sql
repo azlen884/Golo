@@ -1,6 +1,9 @@
 -- Migration 003: Initial Platform Configuration & Default Settings
 -- Version: 1.0.0
 
+SET FOREIGN_KEY_CHECKS = 0;
+SET SQL_MODE = 'NO_AUTO_VALUE_ON_ZERO';
+
 INSERT IGNORE INTO `settings` (`setting_key`, `setting_value`, `category`) VALUES
 ('site_name', 'Apex Gaming Platform', 'general'),
 ('site_tagline', 'Provably Fair Gaming & Infrastructure', 'general'),
@@ -42,3 +45,5 @@ INSERT IGNORE INTO `promotions` (`title`, `slug`, `description`, `min_deposit`, 
 -- Default Super Admin account: username 'admin', email 'admin@apexgame.com', password 'admin123456'
 INSERT IGNORE INTO `admins` (`id`, `username`, `email`, `password_hash`, `full_name`, `is_super`, `status`) VALUES
 (1, 'admin', 'admin@apexgame.com', '$2y$10$/WGBGPx6.J92ok6HzorfqucSYbd0I0UcvQphkhvERehV0gItPjoUS', 'Super Administrator', 1, 'active');
+
+SET FOREIGN_KEY_CHECKS = 1;
