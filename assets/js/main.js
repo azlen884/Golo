@@ -10,6 +10,8 @@
         const adminSidebarBackdrop = document.getElementById('adminSidebarBackdrop');
         if (!adminSidebar) return;
         adminSidebar.classList.add('open');
+        adminSidebar.classList.remove('-translate-x-full');
+        adminSidebar.classList.add('translate-x-0');
         if (adminSidebarBackdrop) {
             adminSidebarBackdrop.classList.add('active');
             adminSidebarBackdrop.classList.remove('hidden');
@@ -23,6 +25,8 @@
         const adminSidebarBackdrop = document.getElementById('adminSidebarBackdrop');
         if (!adminSidebar) return;
         adminSidebar.classList.remove('open');
+        adminSidebar.classList.remove('translate-x-0');
+        adminSidebar.classList.add('-translate-x-full');
         if (adminSidebarBackdrop) {
             adminSidebarBackdrop.classList.remove('active');
             adminSidebarBackdrop.classList.add('hidden');
@@ -34,7 +38,7 @@
     window.toggleAdminSidebar = function (e) {
         if (e && e.preventDefault) e.preventDefault();
         const adminSidebar = document.getElementById('adminSidebar');
-        if (adminSidebar && adminSidebar.classList.contains('open')) {
+        if (adminSidebar && (adminSidebar.classList.contains('open') || adminSidebar.classList.contains('translate-x-0'))) {
             window.closeAdminSidebar();
         } else {
             window.openAdminSidebar();
@@ -46,6 +50,8 @@
         const userSidebarBackdrop = document.getElementById('userSidebarBackdrop');
         if (!userSidebar) return;
         userSidebar.classList.add('open');
+        userSidebar.classList.remove('-translate-x-full');
+        userSidebar.classList.add('translate-x-0');
         if (userSidebarBackdrop) {
             userSidebarBackdrop.classList.add('active');
             userSidebarBackdrop.classList.remove('hidden');
@@ -59,6 +65,8 @@
         const userSidebarBackdrop = document.getElementById('userSidebarBackdrop');
         if (!userSidebar) return;
         userSidebar.classList.remove('open');
+        userSidebar.classList.remove('translate-x-0');
+        userSidebar.classList.add('-translate-x-full');
         if (userSidebarBackdrop) {
             userSidebarBackdrop.classList.remove('active');
             userSidebarBackdrop.classList.add('hidden');
@@ -70,7 +78,7 @@
     window.toggleUserSidebar = function (e) {
         if (e && e.preventDefault) e.preventDefault();
         const userSidebar = document.getElementById('userSidebar');
-        if (userSidebar && userSidebar.classList.contains('open')) {
+        if (userSidebar && (userSidebar.classList.contains('open') || userSidebar.classList.contains('translate-x-0'))) {
             window.closeUserSidebar();
         } else {
             window.openUserSidebar();

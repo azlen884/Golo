@@ -2,11 +2,11 @@
 /**
  * Administrator Layout Footer
  * Apex Gaming Platform
+ * Clean, Unified Responsive Architecture
  */
 ?>
-            </div> <!-- End max-w-7xl content container -->
+            </main> <!-- End main page content wrapper -->
         </div> <!-- End main admin content area -->
-    </div> <!-- End flex layout -->
+    </div> <!-- End admin master layout shell -->
 </body>
 </html>
-

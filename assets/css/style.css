@@ -212,7 +212,9 @@ input, select, textarea, button {
     }
     
     #adminSidebar.open,
-    #userSidebar.open {
+    #adminSidebar.translate-x-0,
+    #userSidebar.open,
+    #userSidebar.translate-x-0 {
         transform: translateX(0) !important;
         box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.75) !important;
     }
@@ -231,6 +233,8 @@ input, select, textarea, button {
         cursor: pointer;
     }
 
+    #adminSidebarBackdrop:not(.hidden),
+    #userSidebarBackdrop:not(.hidden),
     #adminSidebarBackdrop.active,
     #userSidebarBackdrop.active {
         display: block !important;

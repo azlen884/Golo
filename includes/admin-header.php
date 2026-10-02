@@ -2,6 +2,7 @@
 /**
  * Administrator Layout Header
  * Apex Gaming Platform
+ * Clean, Unified Responsive Architecture
  */
 
 require_once __DIR__ . '/../config/config.php';
@@ -24,7 +25,7 @@ $openTicketsCount = (int)$pdo->query("SELECT COUNT(*) FROM support_tickets WHERE
 <html lang="en" class="dark">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
     <title><?= e($pageTitle) ?> — Admin Console</title>
     <!-- Tailwind CSS with custom configuration -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -54,17 +55,62 @@ $openTicketsCount = (int)$pdo->query("SELECT COUNT(*) FROM support_tickets WHERE
         }
     </script>
     <link rel="stylesheet" href="/assets/css/style.css">
+    <script>
+        // Immediate Zero-Lag Sidebar Handlers
+        function openAdminSidebar() {
+            var sb = document.getElementById('adminSidebar');
+            var bd = document.getElementById('adminSidebarBackdrop');
+            if (sb) {
+                sb.classList.remove('-translate-x-full');
+                sb.classList.add('translate-x-0');
+            }
+            if (bd) {
+                bd.classList.remove('hidden');
+            }
+            document.body.classList.add('overflow-hidden');
+        }
+
+        function closeAdminSidebar() {
+            var sb = document.getElementById('adminSidebar');
+            var bd = document.getElementById('adminSidebarBackdrop');
+            if (sb) {
+                sb.classList.remove('translate-x-0');
+                sb.classList.add('-translate-x-full');
+            }
+            if (bd) {
+                bd.classList.add('hidden');
+            }
+            document.body.classList.remove('overflow-hidden');
+        }
+
+        function toggleAdminSidebar() {
+            var sb = document.getElementById('adminSidebar');
+            if (!sb) return;
+            if (sb.classList.contains('translate-x-0')) {
+                closeAdminSidebar();
+            } else {
+                openAdminSidebar();
+            }
+        }
+
+        window.addEventListener('resize', function () {
+            if (window.innerWidth >= 768) {
+                closeAdminSidebar();
+            }
+        });
+    </script>
     <script src="/assets/js/main.js" defer></script>
 </head>
-<body class="bg-dark-950 text-slate-200 min-h-screen flex flex-col selection:bg-brand-600 selection:text-white">
+<body class="bg-dark-950 text-slate-200 min-h-screen flex flex-col selection:bg-brand-600 selection:text-white antialiased overflow-x-hidden">
 
-    <div class="flex-1 flex overflow-hidden min-h-screen w-full min-w-0">
+    <!-- Admin Master Layout Shell -->
+    <div class="flex-1 flex min-h-screen w-full min-w-0 relative">
         
-        <!-- Mobile Slide-out Backdrop Overlay -->
-        <div id="adminSidebarBackdrop" onclick="window.closeAdminSidebar && window.closeAdminSidebar(event)" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-40 hidden transition-opacity duration-300 cursor-pointer"></div>
+        <!-- Mobile Drawer Backdrop Overlay -->
+        <div id="adminSidebarBackdrop" class="fixed inset-0 z-40 bg-black/75 backdrop-blur-sm hidden transition-opacity duration-300 cursor-pointer" onclick="closeAdminSidebar()"></div>
 
-        <!-- Single Canonical Admin Sidebar Navigation (Desktop/Tablet Fixed + Mobile Drawer) -->
-        <aside id="adminSidebar" class="w-64 bg-dark-900 border-r border-white/[0.06] flex-shrink-0 flex flex-col justify-between shadow-2xl md:shadow-none">
+        <!-- Admin Sidebar Navigation: Off-canvas drawer on mobile (<768px), fixed column on desktop (>=768px) -->
+        <aside id="adminSidebar" class="fixed inset-y-0 left-0 z-50 w-72 max-w-[85vw] bg-dark-900 border-r border-white/[0.06] flex flex-col justify-between shadow-2xl transition-transform duration-300 ease-in-out -translate-x-full md:translate-x-0 md:static md:w-64 md:flex-shrink-0 md:shadow-none">
             
             <div class="h-full overflow-y-auto px-4 py-5 space-y-5">
                 
@@ -80,7 +126,7 @@ $openTicketsCount = (int)$pdo->query("SELECT COUNT(*) FROM support_tickets WHERE
                         </div>
                     </div>
                     <!-- Close button on Mobile (< 768px) -->
-                    <button type="button" id="adminCloseSidebar" onclick="window.closeAdminSidebar && window.closeAdminSidebar(event)" class="md:hidden p-1.5 rounded-lg bg-dark-800 text-slate-400 hover:text-white hover:bg-dark-750 transition-colors cursor-pointer" aria-label="Close Sidebar">
+                    <button type="button" id="adminCloseSidebar" onclick="closeAdminSidebar()" class="md:hidden p-1.5 rounded-lg bg-dark-800 text-slate-400 hover:text-white hover:bg-dark-750 transition-colors cursor-pointer" aria-label="Close Sidebar">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
                     </button>
                 </div>
@@ -242,7 +288,7 @@ $openTicketsCount = (int)$pdo->query("SELECT COUNT(*) FROM support_tickets WHERE
                         </div>
                     </div>
 
-                    <!-- System & Maintenance -->
+                    <!-- System & Platform -->
                     <div>
                         <div class="px-3 text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1.5">System & Platform</div>
                         <div class="space-y-0.5">
@@ -305,17 +351,17 @@ $openTicketsCount = (int)$pdo->query("SELECT COUNT(*) FROM support_tickets WHERE
             </div>
         </aside>
 
-        <!-- Main Admin Content Area -->
-        <div class="flex-1 flex flex-col min-w-0 h-full overflow-y-auto overflow-x-hidden w-full">
+        <!-- Main Admin Content Area: Full available width on mobile, adjacent to sidebar on desktop -->
+        <div class="flex-1 flex flex-col min-w-0 w-full min-h-screen overflow-x-hidden">
             
             <!-- Top Admin Header Bar -->
             <header class="h-16 bg-dark-900/90 border-b border-white/[0.06] backdrop-blur-md px-3 sm:px-6 flex items-center justify-between sticky top-0 z-30 flex-shrink-0 w-full min-w-0">
-                <div class="flex items-center gap-2 sm:gap-3 min-w-0">
+                <div class="flex items-center gap-2 sm:gap-3 min-w-0 flex-1">
                     <!-- Hamburger / Menu Button (Mobile < 768px) -->
-                    <button type="button" id="adminSidebarToggle" onclick="window.toggleAdminSidebar && window.toggleAdminSidebar(event)" class="md:hidden p-2 rounded-xl bg-dark-850 hover:bg-dark-800 border border-white/[0.06] text-slate-300 hover:text-white transition-colors flex-shrink-0 cursor-pointer active:scale-95" aria-label="Toggle Sidebar Menu">
+                    <button type="button" id="adminSidebarToggle" onclick="toggleAdminSidebar()" class="md:hidden p-2 rounded-xl bg-dark-850 hover:bg-dark-800 border border-white/[0.06] text-slate-300 hover:text-white transition-colors flex-shrink-0 cursor-pointer active:scale-95" aria-label="Toggle Sidebar Menu">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
                     </button>
-                    <h2 class="text-sm font-bold text-white tracking-tight truncate max-w-[120px] sm:max-w-xs md:max-w-none"><?= e($pageTitle) ?></h2>
+                    <h2 class="text-sm font-bold text-white tracking-tight truncate max-w-[140px] sm:max-w-xs md:max-w-none"><?= e($pageTitle) ?></h2>
                 </div>
                 
                 <div class="flex items-center gap-2 sm:gap-3 flex-shrink-0">
@@ -333,5 +379,6 @@ $openTicketsCount = (int)$pdo->query("SELECT COUNT(*) FROM support_tickets WHERE
                 </div>
             </header>
 
-            <div class="p-3.5 sm:p-6 lg:p-8 max-w-7xl w-full mx-auto space-y-6 min-w-0 flex-1">
+            <!-- Main Admin Content Area Wrapper -->
+            <main class="flex-1 p-3.5 sm:p-6 lg:p-8 max-w-7xl w-full mx-auto space-y-6 min-w-0">
                 <?= render_flash() ?>

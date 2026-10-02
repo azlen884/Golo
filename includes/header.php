@@ -2,6 +2,7 @@
 /**
  * Platform Header Layout
  * Apex Gaming Platform
+ * Clean, Unified Responsive Architecture
  */
 
 require_once __DIR__ . '/../config/config.php';
@@ -23,7 +24,7 @@ $isUserPanel = !empty($authUser) && (strpos($_SERVER['REQUEST_URI'] ?? '', '/use
 <html lang="en" class="dark">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
     <title><?= e($pageTitle) ?></title>
     <!-- Tailwind CSS with custom configuration -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -58,20 +59,64 @@ $isUserPanel = !empty($authUser) && (strpos($_SERVER['REQUEST_URI'] ?? '', '/use
         }
     </script>
     <link rel="stylesheet" href="/assets/css/style.css">
+    <script>
+        // Immediate Zero-Lag User Sidebar Handlers
+        function openUserSidebar() {
+            var sb = document.getElementById('userSidebar');
+            var bd = document.getElementById('userSidebarBackdrop');
+            if (sb) {
+                sb.classList.remove('-translate-x-full');
+                sb.classList.add('translate-x-0');
+            }
+            if (bd) {
+                bd.classList.remove('hidden');
+            }
+            document.body.classList.add('overflow-hidden');
+        }
+
+        function closeUserSidebar() {
+            var sb = document.getElementById('userSidebar');
+            var bd = document.getElementById('userSidebarBackdrop');
+            if (sb) {
+                sb.classList.remove('translate-x-0');
+                sb.classList.add('-translate-x-full');
+            }
+            if (bd) {
+                bd.classList.add('hidden');
+            }
+            document.body.classList.remove('overflow-hidden');
+        }
+
+        function toggleUserSidebar() {
+            var sb = document.getElementById('userSidebar');
+            if (!sb) return;
+            if (sb.classList.contains('translate-x-0')) {
+                closeUserSidebar();
+            } else {
+                openUserSidebar();
+            }
+        }
+
+        window.addEventListener('resize', function () {
+            if (window.innerWidth >= 768) {
+                closeUserSidebar();
+            }
+        });
+    </script>
     <script src="/assets/js/main.js" defer></script>
 </head>
-<body class="bg-dark-950 text-slate-200 min-h-screen flex flex-col selection:bg-brand-600 selection:text-white">
+<body class="bg-dark-950 text-slate-200 min-h-screen flex flex-col selection:bg-brand-600 selection:text-white antialiased overflow-x-hidden">
 
 <?php if ($isUserPanel): ?>
 
-    <!-- USER PANEL LAYOUT: Responsive Sidebar (Desktop Fixed + Mobile Slide-out Drawer) -->
-    <div class="flex h-screen h-[100dvh] overflow-hidden bg-dark-950 w-full min-w-0">
+    <!-- User Master Layout Shell -->
+    <div class="flex-1 flex min-h-screen w-full min-w-0 relative">
         
-        <!-- Mobile Slide-out Backdrop Overlay -->
-        <div id="userSidebarBackdrop" onclick="window.closeUserSidebar && window.closeUserSidebar(event)" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-40 hidden transition-opacity duration-300 cursor-pointer"></div>
+        <!-- Mobile Drawer Backdrop Overlay -->
+        <div id="userSidebarBackdrop" class="fixed inset-0 z-40 bg-black/75 backdrop-blur-sm hidden transition-opacity duration-300 cursor-pointer" onclick="closeUserSidebar()"></div>
 
-        <!-- User Left Sidebar Navigation -->
-        <aside id="userSidebar" class="w-64 sm:w-72 bg-dark-900 border-r border-white/[0.06] flex-shrink-0 flex flex-col justify-between shadow-2xl md:shadow-none">
+        <!-- User Sidebar: Off-canvas drawer on mobile (<768px), fixed column on desktop (>=768px) -->
+        <aside id="userSidebar" class="fixed inset-y-0 left-0 z-50 w-72 max-w-[85vw] bg-dark-900 border-r border-white/[0.06] flex flex-col justify-between shadow-2xl transition-transform duration-300 ease-in-out -translate-x-full md:translate-x-0 md:static md:w-64 lg:w-72 md:flex-shrink-0 md:shadow-none">
             
             <div class="h-full overflow-y-auto px-4 py-5 space-y-5">
                 
@@ -87,7 +132,7 @@ $isUserPanel = !empty($authUser) && (strpos($_SERVER['REQUEST_URI'] ?? '', '/use
                         </div>
                     </a>
                     <!-- Close button on Mobile (< 768px) -->
-                    <button type="button" id="userCloseSidebar" onclick="window.closeUserSidebar && window.closeUserSidebar(event)" class="md:hidden p-1.5 rounded-lg bg-dark-800 text-slate-400 hover:text-white hover:bg-dark-750 transition-colors cursor-pointer" aria-label="Close Sidebar">
+                    <button type="button" id="userCloseSidebar" onclick="closeUserSidebar()" class="md:hidden p-1.5 rounded-lg bg-dark-800 text-slate-400 hover:text-white hover:bg-dark-750 transition-colors cursor-pointer" aria-label="Close Sidebar">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
                     </button>
                 </div>
@@ -103,7 +148,7 @@ $isUserPanel = !empty($authUser) && (strpos($_SERVER['REQUEST_URI'] ?? '', '/use
                     </div>
                     <div class="mt-1 flex items-center gap-1.5 text-[10px] text-slate-400">
                         <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
-                        <span>Wallet Verified & Active</span>
+                        <span>Wallet Verified &amp; Active</span>
                     </div>
                 </div>
 
@@ -231,17 +276,17 @@ $isUserPanel = !empty($authUser) && (strpos($_SERVER['REQUEST_URI'] ?? '', '/use
             </div>
         </aside>
 
-        <!-- Main User Panel Content Area -->
-        <div class="flex-1 flex flex-col min-w-0 h-full overflow-y-auto overflow-x-hidden w-full">
+        <!-- Main User Content Area: Full available width on mobile, adjacent to sidebar on desktop -->
+        <div class="flex-1 flex flex-col min-w-0 w-full min-h-screen overflow-x-hidden">
             
             <!-- Top User Header Bar -->
             <header class="h-16 bg-dark-900/90 border-b border-white/[0.06] backdrop-blur-md px-3 sm:px-6 flex items-center justify-between sticky top-0 z-30 flex-shrink-0 w-full min-w-0">
                 <div class="flex items-center gap-2 sm:gap-3 min-w-0 flex-1">
                     <!-- Hamburger / Menu Button (Mobile < 768px) -->
-                    <button type="button" id="userSidebarToggle" onclick="window.toggleUserSidebar && window.toggleUserSidebar(event)" class="md:hidden p-2 rounded-xl bg-dark-850 hover:bg-dark-800 border border-white/[0.06] text-slate-300 hover:text-white transition-colors flex-shrink-0 cursor-pointer active:scale-95" aria-label="Toggle Sidebar Menu">
+                    <button type="button" id="userSidebarToggle" onclick="toggleUserSidebar()" class="md:hidden p-2 rounded-xl bg-dark-850 hover:bg-dark-800 border border-white/[0.06] text-slate-300 hover:text-white transition-colors flex-shrink-0 cursor-pointer active:scale-95" aria-label="Toggle Navigation Menu">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
                     </button>
-                    <h2 class="text-xs sm:text-sm font-bold text-white tracking-tight truncate max-w-[110px] sm:max-w-xs md:max-w-none"><?= e($pageTitle) ?></h2>
+                    <h2 class="text-xs sm:text-sm font-bold text-white tracking-tight truncate max-w-[130px] sm:max-w-xs md:max-w-none"><?= e($pageTitle) ?></h2>
                 </div>
                 
                 <div class="flex items-center gap-1.5 sm:gap-2.5 flex-shrink-0">
@@ -297,7 +342,8 @@ $isUserPanel = !empty($authUser) && (strpos($_SERVER['REQUEST_URI'] ?? '', '/use
                 </div>
             </header>
 
-            <div class="p-3.5 sm:p-6 lg:p-8 max-w-7xl w-full mx-auto space-y-6 min-w-0 flex-1">
+            <!-- Main Page Content Wrapper -->
+            <main class="flex-1 p-3.5 sm:p-6 lg:p-8 max-w-7xl w-full mx-auto space-y-6 min-w-0">
                 <?= render_flash() ?>
 
 <?php else: ?>
