@@ -58,10 +58,10 @@ $openTicketsCount = (int)$pdo->query("SELECT COUNT(*) FROM support_tickets WHERE
 </head>
 <body class="bg-dark-950 text-slate-200 min-h-screen flex flex-col selection:bg-brand-600 selection:text-white">
 
-    <div class="flex-1 flex overflow-hidden min-h-screen">
+    <div class="flex-1 flex overflow-hidden min-h-screen w-full min-w-0">
         
         <!-- Mobile Slide-out Backdrop Overlay -->
-        <div id="adminSidebarBackdrop" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-40 hidden transition-opacity duration-300"></div>
+        <div id="adminSidebarBackdrop" onclick="window.closeAdminSidebar && window.closeAdminSidebar(event)" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-40 hidden transition-opacity duration-300 cursor-pointer"></div>
 
         <!-- Single Canonical Admin Sidebar Navigation (Desktop/Tablet Fixed + Mobile Drawer) -->
         <aside id="adminSidebar" class="w-64 bg-dark-900 border-r border-white/[0.06] flex-shrink-0 flex flex-col justify-between shadow-2xl md:shadow-none">
@@ -80,7 +80,7 @@ $openTicketsCount = (int)$pdo->query("SELECT COUNT(*) FROM support_tickets WHERE
                         </div>
                     </div>
                     <!-- Close button on Mobile (< 768px) -->
-                    <button type="button" id="adminCloseSidebar" class="md:hidden p-1.5 rounded-lg bg-dark-800 text-slate-400 hover:text-white hover:bg-dark-750 transition-colors" aria-label="Close Sidebar">
+                    <button type="button" id="adminCloseSidebar" onclick="window.closeAdminSidebar && window.closeAdminSidebar(event)" class="md:hidden p-1.5 rounded-lg bg-dark-800 text-slate-400 hover:text-white hover:bg-dark-750 transition-colors cursor-pointer" aria-label="Close Sidebar">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
                     </button>
                 </div>
@@ -306,19 +306,19 @@ $openTicketsCount = (int)$pdo->query("SELECT COUNT(*) FROM support_tickets WHERE
         </aside>
 
         <!-- Main Admin Content Area -->
-        <div class="flex-1 flex flex-col min-w-0 overflow-y-auto">
+        <div class="flex-1 flex flex-col min-w-0 h-full overflow-y-auto overflow-x-hidden w-full">
             
             <!-- Top Admin Header Bar -->
-            <header class="h-16 bg-dark-900/90 border-b border-white/[0.06] backdrop-blur-md px-3 sm:px-6 flex items-center justify-between sticky top-0 z-30">
+            <header class="h-16 bg-dark-900/90 border-b border-white/[0.06] backdrop-blur-md px-3 sm:px-6 flex items-center justify-between sticky top-0 z-30 flex-shrink-0 w-full min-w-0">
                 <div class="flex items-center gap-2 sm:gap-3 min-w-0">
                     <!-- Hamburger / Menu Button (Mobile < 768px) -->
-                    <button type="button" id="adminSidebarToggle" class="md:hidden p-2 rounded-xl bg-dark-850 hover:bg-dark-800 border border-white/[0.06] text-slate-300 hover:text-white transition-colors flex-shrink-0" aria-label="Toggle Sidebar Menu">
+                    <button type="button" id="adminSidebarToggle" onclick="window.toggleAdminSidebar && window.toggleAdminSidebar(event)" class="md:hidden p-2 rounded-xl bg-dark-850 hover:bg-dark-800 border border-white/[0.06] text-slate-300 hover:text-white transition-colors flex-shrink-0 cursor-pointer active:scale-95" aria-label="Toggle Sidebar Menu">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
                     </button>
                     <h2 class="text-sm font-bold text-white tracking-tight truncate max-w-[120px] sm:max-w-xs md:max-w-none"><?= e($pageTitle) ?></h2>
                 </div>
                 
-                <div class="flex items-center gap-2 sm:gap-3">
+                <div class="flex items-center gap-2 sm:gap-3 flex-shrink-0">
                     <a href="/index.php" target="_blank" class="px-2.5 sm:px-3 py-1.5 rounded-lg bg-dark-850 hover:bg-dark-800 border border-white/[0.06] text-xs font-medium text-slate-300 hover:text-white flex items-center gap-1.5 transition-colors">
                         <svg class="w-3.5 h-3.5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
                         <span class="hidden sm:inline">View Public Site</span>
@@ -326,12 +326,12 @@ $openTicketsCount = (int)$pdo->query("SELECT COUNT(*) FROM support_tickets WHERE
                     <a href="/admin/change-password.php" class="hidden sm:inline-flex px-3 py-1.5 rounded-lg bg-dark-850 hover:bg-dark-800 border border-white/[0.06] text-xs font-medium text-slate-300 hover:text-white transition-colors">
                         Security
                     </a>
-                    <a href="/admin/logout.php" class="px-3 py-1.5 rounded-lg bg-rose-600/10 hover:bg-rose-600/20 text-rose-400 text-xs font-semibold transition-colors flex items-center gap-1.5">
+                    <a href="/admin/logout.php" class="px-2.5 sm:px-3 py-1.5 rounded-lg bg-rose-600/10 hover:bg-rose-600/20 text-rose-400 text-xs font-semibold transition-colors flex items-center gap-1.5">
                         <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
-                        <span>Logout</span>
+                        <span class="hidden sm:inline">Logout</span>
                     </a>
                 </div>
             </header>
 
-            <div class="p-4 sm:p-6 lg:p-8 max-w-7xl w-full mx-auto space-y-6">
+            <div class="p-3.5 sm:p-6 lg:p-8 max-w-7xl w-full mx-auto space-y-6 min-w-0 flex-1">
                 <?= render_flash() ?>

@@ -83,6 +83,10 @@ function csrf_field(): string {
     return '<input type="hidden" name="csrf_token" value="' . e(csrf_token()) . '">';
 }
 
+function csrf_input(): string {
+    return csrf_field();
+}
+
 /**
  * Validate submitted CSRF token.
  *

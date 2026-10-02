@@ -3,250 +3,282 @@
  * Apex Gaming Platform
  */
 
-document.addEventListener('DOMContentLoaded', function () {
-    
-    // ==========================================
-    // 1. ADMIN SIDEBAR HANDLERS (Mobile / Tablet)
-    // ==========================================
-    const adminSidebar = document.getElementById('adminSidebar');
-    const adminSidebarToggle = document.getElementById('adminSidebarToggle');
-    const adminCloseSidebar = document.getElementById('adminCloseSidebar');
-    const adminSidebarBackdrop = document.getElementById('adminSidebarBackdrop');
-
-    function openAdminSidebar() {
+(function () {
+    // Global helper functions exposed immediately
+    window.openAdminSidebar = function () {
+        const adminSidebar = document.getElementById('adminSidebar');
+        const adminSidebarBackdrop = document.getElementById('adminSidebarBackdrop');
         if (!adminSidebar) return;
         adminSidebar.classList.add('open');
-        adminSidebar.classList.remove('-translate-x-full');
-        adminSidebar.classList.add('translate-x-0');
         if (adminSidebarBackdrop) {
             adminSidebarBackdrop.classList.add('active');
             adminSidebarBackdrop.classList.remove('hidden');
         }
-        document.body.classList.add('overflow-hidden', 'md:overflow-auto');
-    }
+        document.documentElement.classList.add('sidebar-open');
+        document.body.classList.add('sidebar-open');
+    };
 
-    function closeAdminSidebar() {
+    window.closeAdminSidebar = function () {
+        const adminSidebar = document.getElementById('adminSidebar');
+        const adminSidebarBackdrop = document.getElementById('adminSidebarBackdrop');
         if (!adminSidebar) return;
         adminSidebar.classList.remove('open');
-        adminSidebar.classList.add('-translate-x-full');
-        adminSidebar.classList.remove('translate-x-0');
         if (adminSidebarBackdrop) {
             adminSidebarBackdrop.classList.remove('active');
             adminSidebarBackdrop.classList.add('hidden');
         }
-        document.body.classList.remove('overflow-hidden', 'md:overflow-auto');
-    }
+        document.documentElement.classList.remove('sidebar-open');
+        document.body.classList.remove('sidebar-open');
+    };
 
-    if (adminSidebarToggle) {
-        adminSidebarToggle.addEventListener('click', function (e) {
-            e.preventDefault();
-            e.stopPropagation();
-            if (adminSidebar && (adminSidebar.classList.contains('open') || adminSidebar.classList.contains('translate-x-0'))) {
-                closeAdminSidebar();
-            } else {
-                openAdminSidebar();
-            }
-        });
-    }
+    window.toggleAdminSidebar = function (e) {
+        if (e && e.preventDefault) e.preventDefault();
+        const adminSidebar = document.getElementById('adminSidebar');
+        if (adminSidebar && adminSidebar.classList.contains('open')) {
+            window.closeAdminSidebar();
+        } else {
+            window.openAdminSidebar();
+        }
+    };
 
-    if (adminCloseSidebar) {
-        adminCloseSidebar.addEventListener('click', function (e) {
-            e.preventDefault();
-            closeAdminSidebar();
-        });
-    }
-
-    if (adminSidebarBackdrop) {
-        adminSidebarBackdrop.addEventListener('click', function () {
-            closeAdminSidebar();
-        });
-    }
-
-    // Auto-close admin sidebar on link clicks on mobile (< 768px)
-    if (adminSidebar) {
-        adminSidebar.querySelectorAll('a').forEach(function (link) {
-            link.addEventListener('click', function () {
-                if (window.innerWidth < 768) {
-                    closeAdminSidebar();
-                }
-            });
-        });
-    }
-
-    // ==========================================
-    // 2. USER SIDEBAR HANDLERS (Mobile / Tablet)
-    // ==========================================
-    const userSidebar = document.getElementById('userSidebar');
-    const userSidebarToggle = document.getElementById('userSidebarToggle');
-    const userCloseSidebar = document.getElementById('userCloseSidebar');
-    const userSidebarBackdrop = document.getElementById('userSidebarBackdrop');
-
-    function openUserSidebar() {
+    window.openUserSidebar = function () {
+        const userSidebar = document.getElementById('userSidebar');
+        const userSidebarBackdrop = document.getElementById('userSidebarBackdrop');
         if (!userSidebar) return;
         userSidebar.classList.add('open');
-        userSidebar.classList.remove('-translate-x-full');
-        userSidebar.classList.add('translate-x-0');
         if (userSidebarBackdrop) {
             userSidebarBackdrop.classList.add('active');
             userSidebarBackdrop.classList.remove('hidden');
         }
-        document.body.classList.add('overflow-hidden', 'md:overflow-auto');
-    }
+        document.documentElement.classList.add('sidebar-open');
+        document.body.classList.add('sidebar-open');
+    };
 
-    function closeUserSidebar() {
+    window.closeUserSidebar = function () {
+        const userSidebar = document.getElementById('userSidebar');
+        const userSidebarBackdrop = document.getElementById('userSidebarBackdrop');
         if (!userSidebar) return;
         userSidebar.classList.remove('open');
-        userSidebar.classList.add('-translate-x-full');
-        userSidebar.classList.remove('translate-x-0');
         if (userSidebarBackdrop) {
             userSidebarBackdrop.classList.remove('active');
             userSidebarBackdrop.classList.add('hidden');
         }
-        document.body.classList.remove('overflow-hidden', 'md:overflow-auto');
-    }
+        document.documentElement.classList.remove('sidebar-open');
+        document.body.classList.remove('sidebar-open');
+    };
 
-    if (userSidebarToggle) {
-        userSidebarToggle.addEventListener('click', function (e) {
-            e.preventDefault();
-            e.stopPropagation();
-            if (userSidebar && (userSidebar.classList.contains('open') || userSidebar.classList.contains('translate-x-0'))) {
-                closeUserSidebar();
-            } else {
-                openUserSidebar();
-            }
-        });
-    }
-
-    if (userCloseSidebar) {
-        userCloseSidebar.addEventListener('click', function (e) {
-            e.preventDefault();
-            closeUserSidebar();
-        });
-    }
-
-    if (userSidebarBackdrop) {
-        userSidebarBackdrop.addEventListener('click', function () {
-            closeUserSidebar();
-        });
-    }
-
-    // Auto-close user sidebar on link clicks on mobile (< 768px)
-    if (userSidebar) {
-        userSidebar.querySelectorAll('a').forEach(function (link) {
-            link.addEventListener('click', function () {
-                if (window.innerWidth < 768) {
-                    closeUserSidebar();
-                }
-            });
-        });
-    }
-
-    // Close sidebars on ESC key
-    document.addEventListener('keydown', function (e) {
-        if (e.key === 'Escape') {
-            closeAdminSidebar();
-            closeUserSidebar();
+    window.toggleUserSidebar = function (e) {
+        if (e && e.preventDefault) e.preventDefault();
+        const userSidebar = document.getElementById('userSidebar');
+        if (userSidebar && userSidebar.classList.contains('open')) {
+            window.closeUserSidebar();
+        } else {
+            window.openUserSidebar();
         }
-    });
+    };
 
-    // ==========================================
-    // 3. PUBLIC LANDING MOBILE DRAWER
-    // ==========================================
-    const mobileMenuBtn = document.getElementById('mobileMenuBtn');
-    const mobileDrawer = document.getElementById('mobileDrawer');
-    const closeDrawerBtn = document.getElementById('closeDrawerBtn');
-
-    if (mobileMenuBtn && mobileDrawer) {
-        mobileMenuBtn.addEventListener('click', function (e) {
-            e.preventDefault();
-            mobileDrawer.classList.toggle('hidden');
-        });
+    if (window.__APEX_MAIN_JS_INITIALIZED__) {
+        return;
     }
+    window.__APEX_MAIN_JS_INITIALIZED__ = true;
 
-    if (closeDrawerBtn && mobileDrawer) {
-        closeDrawerBtn.addEventListener('click', function (e) {
-            e.preventDefault();
-            mobileDrawer.classList.add('hidden');
-        });
-    }
+    function initApp() {
+        // ==========================================
+        // 1. ADMIN SIDEBAR HANDLERS (Mobile / Tablet)
+        // ==========================================
+        const adminSidebar = document.getElementById('adminSidebar');
+        const adminSidebarToggle = document.getElementById('adminSidebarToggle');
+        const adminCloseSidebar = document.getElementById('adminCloseSidebar');
+        const adminSidebarBackdrop = document.getElementById('adminSidebarBackdrop');
 
-    // ==========================================
-    // 4. DROPDOWN MENUS
-    // ==========================================
-    document.querySelectorAll('[data-dropdown-toggle]').forEach(function (trigger) {
-        const targetId = trigger.getAttribute('data-dropdown-toggle');
-        const target = document.getElementById(targetId);
+        if (adminSidebarToggle) {
+            adminSidebarToggle.addEventListener('click', window.toggleAdminSidebar);
+        }
 
-        if (target) {
-            trigger.addEventListener('click', function (e) {
-                e.stopPropagation();
-                // Close other open dropdowns
-                document.querySelectorAll('.dropdown-menu').forEach(function (menu) {
-                    if (menu !== target) {
-                        menu.classList.add('hidden');
+        if (adminCloseSidebar) {
+            adminCloseSidebar.addEventListener('click', function (e) {
+                e.preventDefault();
+                window.closeAdminSidebar();
+            });
+        }
+
+        if (adminSidebarBackdrop) {
+            adminSidebarBackdrop.addEventListener('click', function (e) {
+                e.preventDefault();
+                window.closeAdminSidebar();
+            });
+        }
+
+        // Auto-close admin sidebar on link clicks on mobile (< 768px)
+        if (adminSidebar) {
+            adminSidebar.querySelectorAll('a').forEach(function (link) {
+                link.addEventListener('click', function () {
+                    if (window.innerWidth < 768) {
+                        window.closeAdminSidebar();
                     }
                 });
-                target.classList.toggle('hidden');
             });
         }
-    });
 
-    // Close dropdowns on outside click
-    document.addEventListener('click', function () {
-        document.querySelectorAll('.dropdown-menu').forEach(function (menu) {
-            menu.classList.add('hidden');
-        });
-    });
+        // ==========================================
+        // 2. USER SIDEBAR HANDLERS (Mobile / Tablet)
+        // ==========================================
+        const userSidebar = document.getElementById('userSidebar');
+        const userSidebarToggle = document.getElementById('userSidebarToggle');
+        const userCloseSidebar = document.getElementById('userCloseSidebar');
+        const userSidebarBackdrop = document.getElementById('userSidebarBackdrop');
 
-    // ==========================================
-    // 5. COPY TO CLIPBOARD
-    // ==========================================
-    document.querySelectorAll('[data-copy]').forEach(function (btn) {
-        btn.addEventListener('click', function () {
-            const textToCopy = btn.getAttribute('data-copy');
-            if (!textToCopy) return;
+        if (userSidebarToggle) {
+            userSidebarToggle.addEventListener('click', window.toggleUserSidebar);
+        }
 
-            navigator.clipboard.writeText(textToCopy).then(function () {
-                const originalHtml = btn.innerHTML;
-                btn.innerHTML = '<span class="text-emerald-400 text-xs">Copied!</span>';
-                setTimeout(function () {
-                    btn.innerHTML = originalHtml;
-                }, 2000);
-            }).catch(function () {
-                prompt('Copy to clipboard: Ctrl+C, Enter', textToCopy);
-            });
-        });
-    });
-
-    // ==========================================
-    // 6. TAB SWITCHERS
-    // ==========================================
-    document.querySelectorAll('[data-tabs]').forEach(function (tabContainer) {
-        const tabs = tabContainer.querySelectorAll('[data-tab-target]');
-        tabs.forEach(function (tab) {
-            tab.addEventListener('click', function (e) {
+        if (userCloseSidebar) {
+            userCloseSidebar.addEventListener('click', function (e) {
                 e.preventDefault();
-                const targetId = tab.getAttribute('data-tab-target');
-                const targetContent = document.getElementById(targetId);
+                window.closeUserSidebar();
+            });
+        }
 
-                // Deactivate sibling tabs
-                tabs.forEach(function (t) {
-                    t.classList.remove('border-blue-500', 'text-blue-400', 'bg-blue-600/10');
-                    t.classList.add('text-slate-400', 'border-transparent');
+        if (userSidebarBackdrop) {
+            userSidebarBackdrop.addEventListener('click', function (e) {
+                e.preventDefault();
+                window.closeUserSidebar();
+            });
+        }
+
+        // Auto-close user sidebar on link clicks on mobile (< 768px)
+        if (userSidebar) {
+            userSidebar.querySelectorAll('a').forEach(function (link) {
+                link.addEventListener('click', function () {
+                    if (window.innerWidth < 768) {
+                        window.closeUserSidebar();
+                    }
                 });
+            });
+        }
 
-                // Activate clicked tab
-                tab.classList.remove('text-slate-400', 'border-transparent');
-                tab.classList.add('border-blue-500', 'text-blue-400', 'bg-blue-600/10');
+        // Close sidebars on ESC key
+        document.addEventListener('keydown', function (e) {
+            if (e.key === 'Escape') {
+                window.closeAdminSidebar();
+                window.closeUserSidebar();
+            }
+        });
 
-                // Toggle content panels
-                document.querySelectorAll('.tab-content').forEach(function (panel) {
-                    panel.classList.add('hidden');
+        // Auto cleanup on resize to tablet/desktop
+        window.addEventListener('resize', function () {
+            if (window.innerWidth >= 768) {
+                window.closeAdminSidebar();
+                window.closeUserSidebar();
+            }
+        });
+
+        // ==========================================
+        // 3. PUBLIC LANDING MOBILE DRAWER
+        // ==========================================
+        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+        const mobileDrawer = document.getElementById('mobileDrawer');
+        const closeDrawerBtn = document.getElementById('closeDrawerBtn');
+
+        if (mobileMenuBtn && mobileDrawer) {
+            mobileMenuBtn.addEventListener('click', function (e) {
+                e.preventDefault();
+                mobileDrawer.classList.toggle('hidden');
+            });
+        }
+
+        if (closeDrawerBtn && mobileDrawer) {
+            closeDrawerBtn.addEventListener('click', function (e) {
+                e.preventDefault();
+                mobileDrawer.classList.add('hidden');
+            });
+        }
+
+        // ==========================================
+        // 4. DROPDOWN MENUS
+        // ==========================================
+        document.querySelectorAll('[data-dropdown-toggle]').forEach(function (trigger) {
+            const targetId = trigger.getAttribute('data-dropdown-toggle');
+            const target = document.getElementById(targetId);
+
+            if (target) {
+                trigger.addEventListener('click', function (e) {
+                    e.stopPropagation();
+                    // Close other open dropdowns
+                    document.querySelectorAll('.dropdown-menu').forEach(function (menu) {
+                        if (menu !== target) {
+                            menu.classList.add('hidden');
+                        }
+                    });
+                    target.classList.toggle('hidden');
                 });
-                if (targetContent) {
-                    targetContent.classList.remove('hidden');
-                }
+            }
+        });
+
+        // Close dropdowns on outside click
+        document.addEventListener('click', function () {
+            document.querySelectorAll('.dropdown-menu').forEach(function (menu) {
+                menu.classList.add('hidden');
             });
         });
-    });
-});
+
+        // ==========================================
+        // 5. COPY TO CLIPBOARD
+        // ==========================================
+        document.querySelectorAll('[data-copy]').forEach(function (btn) {
+            btn.addEventListener('click', function () {
+                const textToCopy = btn.getAttribute('data-copy');
+                if (!textToCopy) return;
+
+                navigator.clipboard.writeText(textToCopy).then(function () {
+                    const originalHtml = btn.innerHTML;
+                    btn.innerHTML = '<span class="text-emerald-400 text-xs">Copied!</span>';
+                    setTimeout(function () {
+                        btn.innerHTML = originalHtml;
+                    }, 2000);
+                }).catch(function () {
+                    prompt('Copy to clipboard: Ctrl+C, Enter', textToCopy);
+                });
+            });
+        });
+
+        // ==========================================
+        // 6. TAB SWITCHERS
+        // ==========================================
+        document.querySelectorAll('[data-tabs]').forEach(function (tabContainer) {
+            const tabs = tabContainer.querySelectorAll('[data-tab-target]');
+            tabs.forEach(function (tab) {
+                tab.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const targetId = tab.getAttribute('data-tab-target');
+                    const targetContent = document.getElementById(targetId);
+
+                    // Deactivate sibling tabs
+                    tabs.forEach(function (t) {
+                        t.classList.remove('border-blue-500', 'text-blue-400', 'bg-blue-600/10');
+                        t.classList.add('text-slate-400', 'border-transparent');
+                    });
+
+                    // Activate clicked tab
+                    tab.classList.remove('text-slate-400', 'border-transparent');
+                    tab.classList.add('border-blue-500', 'text-blue-400', 'bg-blue-600/10');
+
+                    // Toggle content panels
+                    document.querySelectorAll('.tab-content').forEach(function (panel) {
+                        panel.classList.add('hidden');
+                    });
+                    if (targetContent) {
+                        targetContent.classList.remove('hidden');
+                    }
+                });
+            });
+        });
+    }
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initApp);
+    } else {
+        initApp();
+    }
+})();
+

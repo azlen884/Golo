@@ -8,7 +8,6 @@ $isUserPanel = !empty($authUser) && (strpos($_SERVER['REQUEST_URI'] ?? '', '/use
             </div> <!-- End p-4 sm:p-6 lg:p-8 -->
         </div> <!-- End main content area -->
     </div> <!-- End flex layout -->
-    <script src="/assets/js/main.js"></script>
 </body>
 </html>
 

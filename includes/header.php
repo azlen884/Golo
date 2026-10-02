@@ -65,10 +65,10 @@ $isUserPanel = !empty($authUser) && (strpos($_SERVER['REQUEST_URI'] ?? '', '/use
 <?php if ($isUserPanel): ?>
 
     <!-- USER PANEL LAYOUT: Responsive Sidebar (Desktop Fixed + Mobile Slide-out Drawer) -->
-    <div class="flex-1 flex overflow-hidden min-h-screen">
+    <div class="flex h-screen h-[100dvh] overflow-hidden bg-dark-950 w-full min-w-0">
         
         <!-- Mobile Slide-out Backdrop Overlay -->
-        <div id="userSidebarBackdrop" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-40 hidden transition-opacity duration-300"></div>
+        <div id="userSidebarBackdrop" onclick="window.closeUserSidebar && window.closeUserSidebar(event)" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-40 hidden transition-opacity duration-300 cursor-pointer"></div>
 
         <!-- User Left Sidebar Navigation -->
         <aside id="userSidebar" class="w-64 sm:w-72 bg-dark-900 border-r border-white/[0.06] flex-shrink-0 flex flex-col justify-between shadow-2xl md:shadow-none">
@@ -87,7 +87,7 @@ $isUserPanel = !empty($authUser) && (strpos($_SERVER['REQUEST_URI'] ?? '', '/use
                         </div>
                     </a>
                     <!-- Close button on Mobile (< 768px) -->
-                    <button type="button" id="userCloseSidebar" class="md:hidden p-1.5 rounded-lg bg-dark-800 text-slate-400 hover:text-white hover:bg-dark-750 transition-colors" aria-label="Close Sidebar">
+                    <button type="button" id="userCloseSidebar" onclick="window.closeUserSidebar && window.closeUserSidebar(event)" class="md:hidden p-1.5 rounded-lg bg-dark-800 text-slate-400 hover:text-white hover:bg-dark-750 transition-colors cursor-pointer" aria-label="Close Sidebar">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
                     </button>
                 </div>
@@ -232,32 +232,32 @@ $isUserPanel = !empty($authUser) && (strpos($_SERVER['REQUEST_URI'] ?? '', '/use
         </aside>
 
         <!-- Main User Panel Content Area -->
-        <div class="flex-1 flex flex-col min-w-0 overflow-y-auto">
+        <div class="flex-1 flex flex-col min-w-0 h-full overflow-y-auto overflow-x-hidden w-full">
             
             <!-- Top User Header Bar -->
-            <header class="h-16 bg-dark-900/90 border-b border-white/[0.06] backdrop-blur-md px-3 sm:px-6 flex items-center justify-between sticky top-0 z-30">
-                <div class="flex items-center gap-2 sm:gap-3 min-w-0">
+            <header class="h-16 bg-dark-900/90 border-b border-white/[0.06] backdrop-blur-md px-3 sm:px-6 flex items-center justify-between sticky top-0 z-30 flex-shrink-0 w-full min-w-0">
+                <div class="flex items-center gap-2 sm:gap-3 min-w-0 flex-1">
                     <!-- Hamburger / Menu Button (Mobile < 768px) -->
-                    <button type="button" id="userSidebarToggle" class="md:hidden p-2 rounded-xl bg-dark-850 hover:bg-dark-800 border border-white/[0.06] text-slate-300 hover:text-white transition-colors flex-shrink-0" aria-label="Toggle Sidebar Menu">
+                    <button type="button" id="userSidebarToggle" onclick="window.toggleUserSidebar && window.toggleUserSidebar(event)" class="md:hidden p-2 rounded-xl bg-dark-850 hover:bg-dark-800 border border-white/[0.06] text-slate-300 hover:text-white transition-colors flex-shrink-0 cursor-pointer active:scale-95" aria-label="Toggle Sidebar Menu">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
                     </button>
-                    <h2 class="text-sm font-bold text-white tracking-tight truncate max-w-[120px] sm:max-w-xs md:max-w-none"><?= e($pageTitle) ?></h2>
+                    <h2 class="text-xs sm:text-sm font-bold text-white tracking-tight truncate max-w-[110px] sm:max-w-xs md:max-w-none"><?= e($pageTitle) ?></h2>
                 </div>
                 
-                <div class="flex items-center gap-2 sm:gap-3">
+                <div class="flex items-center gap-1.5 sm:gap-2.5 flex-shrink-0">
                     <!-- Balance Indicator -->
-                    <div class="flex items-center gap-2 bg-dark-850 border border-white/[0.08] px-3 py-1.5 rounded-xl">
-                        <span class="text-xs font-bold text-emerald-400 font-mono"><?= format_money($authUser['balance']) ?></span>
-                        <a href="/user/deposit.php" class="px-2 py-0.5 rounded-md bg-brand-600 hover:bg-brand-500 text-white text-[11px] font-semibold transition-all">
-                            + Add
+                    <div class="flex items-center gap-1 sm:gap-2 bg-dark-850 border border-white/[0.08] px-2 sm:px-3 py-1 sm:py-1.5 rounded-xl">
+                        <span class="text-[11px] sm:text-xs font-bold text-emerald-400 font-mono"><?= format_money($authUser['balance']) ?></span>
+                        <a href="/user/deposit.php" class="px-1.5 sm:px-2 py-0.5 rounded-md bg-brand-600 hover:bg-brand-500 text-white text-[10px] sm:text-[11px] font-semibold transition-all">
+                            +<span class="hidden sm:inline"> Add</span>
                         </a>
                     </div>
 
                     <!-- Notifications Bell -->
-                    <a href="/user/notifications.php" class="relative p-2 rounded-xl bg-dark-850 hover:bg-dark-800 border border-white/[0.06] text-slate-300 hover:text-white transition-colors">
+                    <a href="/user/notifications.php" class="relative p-1.5 sm:p-2 rounded-xl bg-dark-850 hover:bg-dark-800 border border-white/[0.06] text-slate-300 hover:text-white transition-colors" title="Notifications">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path></svg>
                         <?php if ($unreadNotifs > 0): ?>
-                            <span class="absolute -top-1 -right-1 w-4 h-4 bg-brand-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center animate-pulse">
+                            <span class="absolute -top-1 -right-1 w-4 h-4 bg-brand-500 text-white text-[9px] font-bold rounded-full flex items-center justify-center animate-pulse">
                                 <?= $unreadNotifs > 9 ? '9+' : $unreadNotifs ?>
                             </span>
                         <?php endif; ?>
@@ -265,12 +265,12 @@ $isUserPanel = !empty($authUser) && (strpos($_SERVER['REQUEST_URI'] ?? '', '/use
 
                     <!-- User Profile Dropdown -->
                     <div class="relative">
-                        <button type="button" data-dropdown-toggle="userHeaderDropdown" class="flex items-center gap-2 p-1.5 rounded-xl bg-dark-850 hover:bg-dark-800 border border-white/[0.06] transition-colors">
-                            <div class="w-7 h-7 rounded-lg bg-gradient-to-tr from-brand-600 to-indigo-600 flex items-center justify-center text-white text-xs font-bold uppercase">
+                        <button type="button" data-dropdown-toggle="userHeaderDropdown" class="flex items-center gap-1.5 p-1 sm:p-1.5 rounded-xl bg-dark-850 hover:bg-dark-800 border border-white/[0.06] transition-colors cursor-pointer" aria-label="User Profile">
+                            <div class="w-7 h-7 rounded-lg bg-gradient-to-tr from-brand-600 to-indigo-600 flex items-center justify-center text-white text-xs font-bold uppercase flex-shrink-0">
                                 <?= substr($authUser['username'], 0, 2) ?>
                             </div>
                             <span class="text-xs font-semibold text-slate-200 hidden sm:inline-block max-w-[90px] truncate"><?= e($authUser['username']) ?></span>
-                            <svg class="w-3.5 h-3.5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                            <svg class="w-3.5 h-3.5 text-slate-400 hidden sm:inline" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
                         </button>
 
                         <div id="userHeaderDropdown" class="dropdown-menu hidden absolute right-0 mt-2 w-52 rounded-2xl bg-dark-900 border border-white/[0.08] shadow-2xl p-2 z-50 animate-fadeIn">
@@ -279,7 +279,7 @@ $isUserPanel = !empty($authUser) && (strpos($_SERVER['REQUEST_URI'] ?? '', '/use
                                 <div class="text-[11px] text-slate-400 truncate"><?= e($authUser['email']) ?></div>
                             </div>
                             <a href="/user/profile.php" class="flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-medium text-slate-300 hover:text-white hover:bg-white/[0.04]">
-                                Profile & KYC
+                                Profile &amp; KYC
                             </a>
                             <a href="/user/security.php" class="flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-medium text-slate-300 hover:text-white hover:bg-white/[0.04]">
                                 Security
@@ -297,7 +297,7 @@ $isUserPanel = !empty($authUser) && (strpos($_SERVER['REQUEST_URI'] ?? '', '/use
                 </div>
             </header>
 
-            <div class="p-4 sm:p-6 lg:p-8 max-w-7xl w-full mx-auto space-y-6">
+            <div class="p-3.5 sm:p-6 lg:p-8 max-w-7xl w-full mx-auto space-y-6 min-w-0 flex-1">
                 <?= render_flash() ?>
 
 <?php else: ?>
